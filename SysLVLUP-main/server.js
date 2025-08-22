@@ -44,6 +44,11 @@ app.get('/auth', (req, res) => {
   res.sendFile(path.join(__dirname, 'SysLvLUp', 'Alarm', 'auth.html'));
 });
 
+// Test endpoint to verify API is working
+app.get('/api/test', (req, res) => {
+  res.json({ message: 'API is working!', timestamp: new Date().toISOString() });
+});
+
 // Authentication middleware
 const authenticateToken = async (req, res, next) => {
   const authHeader = req.headers['authorization'];
@@ -100,22 +105,6 @@ app.post('/api/sync', authenticateToken, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-const authenticateToken = async (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-
-  if (!token) {
-    return res.status(401).json({ error: 'Access token required' });
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
-    req.user = decoded;
-    next();
-  } catch (error) {
-    return res.status(403).json({ error: 'Invalid token' });
-  }
-};
 
 // Get user data endpoint
 app.get('/api/user/:userId', authenticateToken, async (req, res) => {
@@ -136,6 +125,7 @@ app.get('/api/user/:userId', authenticateToken, async (req, res) => {
 
 // Authentication endpoints
 app.post('/api/auth/register', async (req, res) => {
+  console.log('Registration attempt:', { username: req.body.username, email: req.body.email });
   try {
     const { username, email, password } = req.body;
 
@@ -223,6 +213,7 @@ app.post('/api/auth/register', async (req, res) => {
 });
 
 app.post('/api/auth/login', async (req, res) => {
+  console.log('Login attempt:', { username: req.body.username });
   try {
     const { username, password } = req.body;
 
@@ -288,6 +279,7 @@ app.post('/api/auth/logout', authenticateToken, async (req, res) => {
 });
 
 app.get('/api/auth/check-username/:username', async (req, res) => {
+  console.log('Username check:', req.params.username);
   try {
     const { username } = req.params;
     

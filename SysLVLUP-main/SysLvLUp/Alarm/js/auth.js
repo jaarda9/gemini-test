@@ -96,6 +96,7 @@ class AuthSystem {
         this.showLoading(true);
 
         try {
+            console.log('Attempting registration for:', username);
             const response = await fetch('/api/auth/register', {
                 method: 'POST',
                 headers: {
@@ -104,17 +105,29 @@ class AuthSystem {
                 body: JSON.stringify({ username, email, password })
             });
 
-            const data = await response.json();
-
-            if (response.ok) {
-                this.showMessage('Registration successful! Please login.', 'success');
-                setTimeout(() => {
-                    switchForm('login');
-                }, 1500);
-            } else {
-                this.showMessage(data.error || 'Registration failed', 'error');
+            console.log('Registration response status:', response.status);
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Registration error response:', errorText);
+                try {
+                    const errorData = JSON.parse(errorText);
+                    this.showMessage(errorData.error || 'Registration failed', 'error');
+                } catch (e) {
+                    this.showMessage(`Registration failed: ${response.status} ${response.statusText}`, 'error');
+                }
+                return;
             }
+
+            const data = await response.json();
+            console.log('Registration successful:', data);
+
+            this.showMessage('Registration successful! Please login.', 'success');
+            setTimeout(() => {
+                switchForm('login');
+            }, 1500);
         } catch (error) {
+            console.error('Registration network error:', error);
             this.showMessage('Network error. Please try again.', 'error');
         } finally {
             this.showLoading(false);
@@ -125,8 +138,17 @@ class AuthSystem {
         if (!username || username.length < 3) return;
 
         try {
+            console.log('Checking username availability for:', username);
             const response = await fetch(`/api/auth/check-username/${username}`);
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Username check error response:', errorText);
+                return;
+            }
+            
             const data = await response.json();
+            console.log('Username check result:', data);
 
             const statusElement = document.querySelector('.username-status');
             if (!statusElement) {
