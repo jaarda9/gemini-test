@@ -23,10 +23,10 @@ class AuthSystem {
             this.handleRegister();
         });
 
-        // Username availability check
-        document.getElementById('registerUsername').addEventListener('blur', (e) => {
-            this.checkUsernameAvailability(e.target.value);
-        });
+        // Username availability check - temporarily disabled
+        // document.getElementById('registerUsername').addEventListener('blur', (e) => {
+        //     this.checkUsernameAvailability(e.target.value);
+        // });
 
         // Password strength check
         document.getElementById('registerPassword').addEventListener('input', (e) => {

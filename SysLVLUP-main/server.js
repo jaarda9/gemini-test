@@ -27,28 +27,6 @@ async function connectDB() {
   }
 }
 
-// Routes
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'SysLvLUp', 'Alarm', 'index.html'));
-});
-
-app.get('/skill-tree', (req, res) => {
-  res.sendFile(path.join(__dirname, 'SysLvLUp', 'Alarm', 'skill-tree.html'));
-});
-
-app.get('/random-quest', (req, res) => {
-  res.sendFile(path.join(__dirname, 'SysLvLUp', 'Alarm', 'random-quest.html'));
-});
-
-app.get('/auth', (req, res) => {
-  res.sendFile(path.join(__dirname, 'SysLvLUp', 'Alarm', 'auth.html'));
-});
-
-// Test endpoint to verify API is working
-app.get('/api/test', (req, res) => {
-  res.json({ message: 'API is working!', timestamp: new Date().toISOString() });
-});
-
 // Authentication middleware
 const authenticateToken = async (req, res, next) => {
   const authHeader = req.headers['authorization'];
@@ -67,60 +45,38 @@ const authenticateToken = async (req, res, next) => {
   }
 };
 
-// Sync localStorage data endpoint
-app.post('/api/sync', authenticateToken, async (req, res) => {
-  try {
-    const { userId, localStorageData } = req.body;
-
-    if (!userId || !localStorageData) {
-      return res.status(400).json({ error: 'Missing userId or localStorageData' });
-    }
-
-    // Verify the user is syncing their own data
-    if (userId !== req.user.userId) {
-      return res.status(403).json({ error: 'Unauthorized access to user data' });
-    }
-
-    // Create or update the user's localStorage data
-    const result = await db.collection('userData').updateOne(
-      { userId: userId },
-      { 
-        $set: { 
-          localStorage: localStorageData,
-          lastUpdated: new Date()
-        } 
-      },
-      { upsert: true }
-    );
-
-    res.status(200).json({ 
-      success: true, 
-      message: 'LocalStorage data synced successfully',
-      modifiedCount: result.modifiedCount,
-      upsertedId: result.upsertedId
-    });
-
-  } catch (err) {
-    console.error('Error syncing localStorage:', err);
-    res.status(500).json({ error: err.message });
-  }
+// Routes
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'SysLvLUp', 'Alarm', 'index.html'));
 });
 
-// Get user data endpoint
-app.get('/api/user/:userId', authenticateToken, async (req, res) => {
-  try {
-    const { userId } = req.params;
-    const userData = await db.collection('userData').findOne({ userId });
-    
-    if (!userData) {
-      return res.status(404).json({ error: 'User data not found' });
-    }
+app.get('/skill-tree', (req, res) => {
+  res.sendFile(path.join(__dirname, 'SysLvLUp', 'Alarm', 'skill-tree.html'));
+});
 
-    res.status(200).json(userData);
-  } catch (err) {
-    console.error('Error fetching user data:', err);
-    res.status(500).json({ error: err.message });
-  }
+app.get('/random-quest', (req, res) => {
+  res.sendFile(path.join(__dirname, 'SysLvLUp', 'Alarm', 'random-quest.html'));
+});
+
+app.get('/auth', (req, res) => {
+  res.sendFile(path.join(__dirname, 'SysLvLUp', 'Alarm', 'auth.html'));
+});
+
+// Test endpoints
+app.get('/api/test', (req, res) => {
+  res.json({ message: 'API is working!', timestamp: new Date().toISOString() });
+});
+
+app.get('/api/debug', (req, res) => {
+  res.json({ 
+    message: 'Debug endpoint working!', 
+    timestamp: new Date().toISOString(),
+    method: req.method,
+    url: req.url,
+    environment: process.env.NODE_ENV || 'development',
+    hasMongoUri: !!process.env.MONGODB_URI,
+    hasJwtSecret: !!process.env.JWT_SECRET
+  });
 });
 
 // Authentication endpoints
@@ -268,16 +224,6 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
-app.post('/api/auth/logout', authenticateToken, async (req, res) => {
-  try {
-    // In a more complex system, you might want to blacklist the token
-    res.status(200).json({ message: 'Logout successful' });
-  } catch (error) {
-    console.error('Logout error:', error);
-    res.status(500).json({ error: 'Logout failed' });
-  }
-});
-
 app.get('/api/auth/check-username/:username', async (req, res) => {
   console.log('Username check:', req.params.username);
   try {
@@ -292,6 +238,15 @@ app.get('/api/auth/check-username/:username', async (req, res) => {
   } catch (error) {
     console.error('Username check error:', error);
     res.status(500).json({ error: 'Username check failed' });
+  }
+});
+
+app.post('/api/auth/logout', authenticateToken, async (req, res) => {
+  try {
+    res.status(200).json({ message: 'Logout successful' });
+  } catch (error) {
+    console.error('Logout error:', error);
+    res.status(500).json({ error: 'Logout failed' });
   }
 });
 
@@ -310,6 +265,62 @@ app.get('/api/auth/me', authenticateToken, async (req, res) => {
   } catch (error) {
     console.error('Get user error:', error);
     res.status(500).json({ error: 'Failed to get user data' });
+  }
+});
+
+// Sync localStorage data endpoint
+app.post('/api/sync', authenticateToken, async (req, res) => {
+  try {
+    const { userId, localStorageData } = req.body;
+
+    if (!userId || !localStorageData) {
+      return res.status(400).json({ error: 'Missing userId or localStorageData' });
+    }
+
+    // Verify the user is syncing their own data
+    if (userId !== req.user.userId) {
+      return res.status(403).json({ error: 'Unauthorized access to user data' });
+    }
+
+    // Create or update the user's localStorage data
+    const result = await db.collection('userData').updateOne(
+      { userId: userId },
+      { 
+        $set: { 
+          localStorage: localStorageData,
+          lastUpdated: new Date()
+        } 
+      },
+      { upsert: true }
+    );
+
+    res.status(200).json({ 
+      success: true, 
+      message: 'LocalStorage data synced successfully',
+      modifiedCount: result.modifiedCount,
+      upsertedId: result.upsertedId
+    });
+
+  } catch (err) {
+    console.error('Error syncing localStorage:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get user data endpoint
+app.get('/api/user/:userId', authenticateToken, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const userData = await db.collection('userData').findOne({ userId });
+    
+    if (!userData) {
+      return res.status(404).json({ error: 'User data not found' });
+    }
+
+    res.status(200).json(userData);
+  } catch (err) {
+    console.error('Error fetching user data:', err);
+    res.status(500).json({ error: err.message });
   }
 });
 
