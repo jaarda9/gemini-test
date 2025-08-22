@@ -18,7 +18,7 @@ module.exports = async function handler(req, res) {
   try {
     await client.connect();
     const db = client.db();
-    const collection = db.collection('userData');
+    const collection = db.collection('syslvlup_userData');
 
     if (req.method === 'POST') {
       const { userId, localStorageData } = req.body;
