@@ -22,27 +22,7 @@ document.addEventListener("DOMContentLoaded", function() {
   // Call the measurePing function with a URL to ping
   measurePing('https://sys-lvlup.vercel.app/status.html'); // Replace with your server URL
 });
-async function syncToDatabase() {
-    try {
-      const localStorageData = JSON.parse(localStorage.getItem("gameData"));
-      
-      if (Object.keys(localStorageData).length === 0) {
-        console.log('No localStorage data to sync');
-        return { success: true, message: 'No data to sync' };
-      }
 
-      // Use the authenticated database manager
-      const db = new DatabaseManager();
-      await db.pushAllData();
-      
-      console.log('Sync successful');
-      return { success: true };
-
-    } catch (error) {
-      console.error('Error syncing to database:', error);
-      throw error;
-    }
-  }
 
 // Constants
 const ranks = ["E-Rank", "D-Rank", "C-Rank", "B-Rank", "A-Rank", "S-Rank"];
@@ -482,18 +462,6 @@ function resetDailyStats() {
 document.addEventListener("DOMContentLoaded", function() {
   console.log("Page loaded.");
   
-  // Check authentication first
-  if (!window.authSystem || !window.authSystem.isAuthenticated()) {
-    window.location.href = '/auth.html';
-    return;
-  }
-
-  // Display current user
-  const currentUser = window.authSystem.getCurrentUser();
-  if (currentUser) {
-    document.getElementById('current-user').textContent = `Welcome, ${currentUser.username}!`;
-  }
-
   loadData(); // Load existing data
   updateFatigueProgress(); // Update fatigue progress
   checkForLevelUp(); // Check for level up
