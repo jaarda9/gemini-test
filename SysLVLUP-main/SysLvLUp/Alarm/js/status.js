@@ -663,11 +663,6 @@ function exportData() {
   URL.revokeObjectURL(url); // Clean up
 }
 
-document.getElementById("export-button").addEventListener("click", exportData);
-document.getElementById("import-button").addEventListener("click", function() {
-  document.getElementById("import-input").click(); // Trigger the file input click
-});
-
 
 window.onload = function() {
   loadData(); // Load existing data
