@@ -211,13 +211,14 @@ class AuthSystem {
         const session = this.getSession();
         if (session) {
             // User is logged in, redirect to status page if on auth page
-            if (window.location.pathname.includes('auth.html')) {
+            if (window.location.pathname.includes('auth.html') || window.location.pathname === '/auth') {
                 window.location.href = '/status.html';
             }
         } else {
             // User is not logged in, redirect to auth page if not on auth page
             if (!window.location.pathname.includes('auth.html') && 
-                !window.location.pathname.includes('index.html')) {
+                !window.location.pathname.includes('index.html') &&
+                window.location.pathname !== '/auth') {
                 window.location.href = '/auth.html';
             }
         }

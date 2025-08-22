@@ -44,6 +44,24 @@ app.get('/auth', (req, res) => {
   res.sendFile(path.join(__dirname, 'SysLvLUp', 'Alarm', 'auth.html'));
 });
 
+// Authentication middleware
+const authenticateToken = async (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ error: 'Access token required' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+    req.user = decoded;
+    next();
+  } catch (error) {
+    return res.status(403).json({ error: 'Invalid token' });
+  }
+};
+
 // Sync localStorage data endpoint
 app.post('/api/sync', authenticateToken, async (req, res) => {
   try {
@@ -82,8 +100,6 @@ app.post('/api/sync', authenticateToken, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-// Authentication middleware
 const authenticateToken = async (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
