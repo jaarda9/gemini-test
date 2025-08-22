@@ -35,7 +35,7 @@ class AuthSystem {
     }
 
     async handleLogin() {
-        const username = document.getElementById('loginUsername').value;
+        const username = document.getElementById('loginUsername').value.trim();
         const password = document.getElementById('loginPassword').value;
 
         if (!username || !password) {
@@ -54,7 +54,12 @@ class AuthSystem {
                 body: JSON.stringify({ username, password })
             });
 
-            const data = await response.json();
+            let data;
+            try {
+                data = await response.json();
+            } catch (e) {
+                throw new Error('Invalid response from server');
+            }
 
             if (response.ok) {
                 this.showMessage('Login successful!', 'success');
@@ -66,6 +71,7 @@ class AuthSystem {
                 this.showMessage(data.error || 'Login failed', 'error');
             }
         } catch (error) {
+            console.error('Login error:', error);
             this.showMessage('Network error. Please try again.', 'error');
         } finally {
             this.showLoading(false);
@@ -73,13 +79,23 @@ class AuthSystem {
     }
 
     async handleRegister() {
-        const username = document.getElementById('registerUsername').value;
-        const email = document.getElementById('registerEmail').value;
+        const username = document.getElementById('registerUsername').value.trim();
+        const email = document.getElementById('registerEmail').value.trim();
         const password = document.getElementById('registerPassword').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
 
         if (!username || !email || !password || !confirmPassword) {
             this.showMessage('Please fill in all fields', 'error');
+            return;
+        }
+
+        if (username.length < 3) {
+            this.showMessage('Username must be at least 3 characters long', 'error');
+            return;
+        }
+
+        if (!email.includes('@')) {
+            this.showMessage('Please enter a valid email address', 'error');
             return;
         }
 
@@ -107,19 +123,18 @@ class AuthSystem {
 
             console.log('Registration response status:', response.status);
             
+            let data;
+            try {
+                data = await response.json();
+            } catch (e) {
+                throw new Error('Invalid response from server');
+            }
+            
             if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Registration error response:', errorText);
-                try {
-                    const errorData = JSON.parse(errorText);
-                    this.showMessage(errorData.error || 'Registration failed', 'error');
-                } catch (e) {
-                    this.showMessage(`Registration failed: ${response.status} ${response.statusText}`, 'error');
-                }
+                this.showMessage(data.error || 'Registration failed', 'error');
                 return;
             }
 
-            const data = await response.json();
             console.log('Registration successful:', data);
 
             this.showMessage('Registration successful! Please login.', 'success');
@@ -240,7 +255,8 @@ class AuthSystem {
             // User is not logged in, redirect to auth page if not on auth page
             if (!window.location.pathname.includes('auth.html') && 
                 !window.location.pathname.includes('index.html') &&
-                window.location.pathname !== '/auth') {
+                window.location.pathname !== '/auth' &&
+                window.location.pathname !== '/') {
                 window.location.href = '/auth.html';
             }
         }

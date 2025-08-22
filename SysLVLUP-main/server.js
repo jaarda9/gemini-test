@@ -22,8 +22,15 @@ async function connectDB() {
     await client.connect();
     db = client.db();
     console.log('Connected to MongoDB');
+    console.log('Database name:', db.databaseName);
+    
+    // Test the connection by listing collections
+    const collections = await db.listCollections().toArray();
+    console.log('Available collections:', collections.map(c => c.name));
   } catch (error) {
     console.error('MongoDB connection error:', error);
+    console.log('Please check your MONGODB_URI environment variable');
+    console.log('For local development, you can use: mongodb://localhost:27017/gamedata');
   }
 }
 
@@ -41,7 +48,14 @@ const authenticateToken = async (req, res, next) => {
     req.user = decoded;
     next();
   } catch (error) {
-    return res.status(403).json({ error: 'Invalid token' });
+    console.error('Token verification error:', error.message);
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({ error: 'Token expired' });
+    } else if (error.name === 'JsonWebTokenError') {
+      return res.status(403).json({ error: 'Invalid token format' });
+    } else {
+      return res.status(403).json({ error: 'Invalid token' });
+    }
   }
 };
 
@@ -85,8 +99,26 @@ app.post('/api/auth/register', async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
+    // Validate input
     if (!username || !email || !password) {
       return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    if (username.length < 3) {
+      return res.status(400).json({ error: 'Username must be at least 3 characters long' });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ error: 'Password must be at least 6 characters long' });
+    }
+
+    if (!email.includes('@')) {
+      return res.status(400).json({ error: 'Please enter a valid email address' });
+    }
+
+    // Check if database is connected
+    if (!db) {
+      return res.status(500).json({ error: 'Database connection not available' });
     }
 
     // Check if username already exists
@@ -95,7 +127,11 @@ app.post('/api/auth/register', async (req, res) => {
     });
 
     if (existingUser) {
-      return res.status(400).json({ error: 'Username or email already exists' });
+      if (existingUser.username === username) {
+        return res.status(400).json({ error: 'Username already exists' });
+      } else {
+        return res.status(400).json({ error: 'Email already exists' });
+      }
     }
 
     // Hash password
@@ -157,6 +193,8 @@ app.post('/api/auth/register', async (req, res) => {
 
     await db.collection('userData').insertOne(defaultGameData);
 
+    console.log('User registered successfully:', { username, userId: result.insertedId.toString() });
+
     res.status(201).json({ 
       message: 'User registered successfully',
       userId: result.insertedId.toString()
@@ -164,7 +202,7 @@ app.post('/api/auth/register', async (req, res) => {
 
   } catch (error) {
     console.error('Registration error:', error);
-    res.status(500).json({ error: 'Registration failed' });
+    res.status(500).json({ error: 'Registration failed. Please try again.' });
   }
 });
 
@@ -177,18 +215,23 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(400).json({ error: 'Username and password are required' });
     }
 
+    // Check if database is connected
+    if (!db) {
+      return res.status(500).json({ error: 'Database connection not available' });
+    }
+
     // Find user
     const user = await db.collection('users').findOne({ username });
 
     if (!user) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      return res.status(401).json({ error: 'Invalid username or password' });
     }
 
     // Check password
     const isValidPassword = await bcrypt.compare(password, user.password);
 
     if (!isValidPassword) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      return res.status(401).json({ error: 'Invalid username or password' });
     }
 
     // Update last login
@@ -208,6 +251,8 @@ app.post('/api/auth/login', async (req, res) => {
       { expiresIn: '7d' }
     );
 
+    console.log('User logged in successfully:', { username, userId: user._id.toString() });
+
     res.status(200).json({
       message: 'Login successful',
       token,
@@ -220,7 +265,7 @@ app.post('/api/auth/login', async (req, res) => {
 
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ error: 'Login failed' });
+    res.status(500).json({ error: 'Login failed. Please try again.' });
   }
 });
 
