@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Tree - Ascend</title>
+    <link rel="stylesheet" href="css/skill-tree.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="skill-tree-container">
+        <div class="header">
+            <h1><i class="fas fa-tree"></i> SKILL TREE</h1>
+            <div class="skill-points">
+                <span>Skill Points: <span id="skill-points">0</span></span>
+            </div>
+            <a href="status.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Status</a>
+        </div>
+
+        <div class="skill-categories">
+            <div class="category-tabs">
+                <button class="tab-btn active" data-category="physical">
+                    <i class="fas fa-dumbbell"></i> Physical
+                </button>
+                <button class="tab-btn" data-category="mental">
+                    <i class="fas fa-brain"></i> Mental
+                </button>
+                <button class="tab-btn" data-category="spiritual">
+                    <i class="fas fa-yin-yang"></i> Spiritual
+                </button>
+                <button class="tab-btn" data-category="utility">
+                    <i class="fas fa-tools"></i> Utility
+                </button>
+            </div>
+        </div>
+
+        <div class="skill-trees">
+            <!-- Physical Skills -->
+            <div class="skill-tree active" id="physical-tree">
+                <div class="skill-node" data-skill="iron-will" data-requirements='{"level": 5, "str": 15}'>
+                    <div class="node-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div class="node-info">
+                        <h3>Iron Will</h3>
+                        <p>Increase HP by 20%</p>
+                        <div class="requirements">Req: Level 5, STR 15</div>
+                    </div>
+                </div>
+
+                <div class="skill-node" data-skill="berserker" data-requirements='{"level": 10, "str": 25, "vit": 20}'>
+                    <div class="node-icon"><i class="fas fa-fist-raised"></i></div>
+                    <div class="node-info">
+                        <h3>Berserker</h3>
+                        <p>STR +5, AGI +3</p>
+                        <div class="requirements">Req: Level 10, STR 25, VIT 20</div>
+                    </div>
+                </div>
+
+                <div class="skill-node" data-skill="regeneration" data-requirements='{"level": 15, "vit": 30}'>
+                    <div class="node-icon"><i class="fas fa-heartbeat"></i></div>
+                    <div class="node-info">
+                        <h3>Regeneration</h3>
+                        <p>HP regenerates 5% per hour</p>
+                        <div class="requirements">Req: Level 15, VIT 30</div>
+                    </div>
+                </div>
+
+                <div class="skill-node" data-skill="speed-demon" data-requirements='{"level": 8, "agi": 20}'>
+                    <div class="node-icon"><i class="fas fa-running"></i></div>
+                    <div class="node-info">
+                        <h3>Speed Demon</h3>
+                        <p>AGI +8, fatigue -20%</p>
+                        <div class="requirements">Req: Level 8, AGI 20</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mental Skills -->
+            <div class="skill-tree" id="mental-tree">
+                <div class="skill-node" data-skill="photographic-memory" data-requirements='{"level": 5, "int": 15}'>
+                    <div class="node-icon"><i class="fas fa-camera"></i></div>
+                    <div class="node-info">
+                        <h3>Photographic Memory</h3>
+                        <p>INT +5, EXP gain +10%</p>
+                        <div class="requirements">Req: Level 5, INT 15</div>
+                    </div>
+                </div>
+
+                <div class="skill-node" data-skill="mind-over-matter" data-requirements='{"level": 12, "int": 25, "wis": 20}'>
+                    <div class="node-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="node-info">
+                        <h3>Mind Over Matter</h3>
+                        <p>MP +50%, INT +3</p>
+                        <div class="requirements">Req: Level 12, INT 25, WIS 20</div>
+                    </div>
+                </div>
+
+                <div class="skill-node" data-skill="eagle-eye" data-requirements='{"level": 7, "per": 18}'>
+                    <div class="node-icon"><i class="fas fa-eye"></i></div>
+                    <div class="node-info">
+                        <h3>Eagle Eye</h3>
+                        <p>PER +6, quest rewards +15%</p>
+                        <div class="requirements">Req: Level 7, PER 18</div>
+                    </div>
+                </div>
+
+                <div class="skill-node" data-skill="wisdom-seeker" data-requirements='{"level": 20, "wis": 35}'>
+                    <div class="node-icon"><i class="fas fa-book-open"></i></div>
+                    <div class="node-info">
+                        <h3>Wisdom Seeker</h3>
+                        <p>All attributes +2, WIS +10</p>
+                        <div class="requirements">Req: Level 20, WIS 35</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spiritual Skills -->
+            <div class="skill-tree" id="spiritual-tree">
+                <div class="skill-node" data-skill="inner-peace" data-requirements='{"level": 6, "wis": 15}'>
+                    <div class="node-icon"><i class="fas fa-om"></i></div>
+                    <div class="node-info">
+                        <h3>Inner Peace</h3>
+                        <p>Fatigue -30%, WIS +4</p>
+                        <div class="requirements">Req: Level 6, WIS 15</div>
+                    </div>
+                </div>
+
+                <div class="skill-node" data-skill="soul-bond" data-requirements='{"level": 15, "wis": 25, "int": 20}'>
+                    <div class="node-icon"><i class="fas fa-infinity"></i></div>
+                    <div class="node-info">
+                        <h3>Soul Bond</h3>
+                        <p>MP regeneration +10% per hour</p>
+                        <div class="requirements">Req: Level 15, WIS 25, INT 20</div>
+                    </div>
+                </div>
+
+                <div class="skill-node" data-skill="transcendence" data-requirements='{"level": 25, "wis": 40}'>
+                    <div class="node-icon"><i class="fas fa-star"></i></div>
+                    <div class="node-info">
+                        <h3>Transcendence</h3>
+                        <p>Level up requirements -20%</p>
+                        <div class="requirements">Req: Level 25, WIS 40</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Utility Skills -->
+            <div class="skill-tree" id="utility-tree">
+                <div class="skill-node" data-skill="lucky-charm" data-requirements='{"level": 3}'>
+                    <div class="node-icon"><i class="fas fa-clover"></i></div>
+                    <div class="node-info">
+                        <h3>Lucky Charm</h3>
+                        <p>Random bonus rewards +25%</p>
+                        <div class="requirements">Req: Level 3</div>
+                    </div>
+                </div>
+
+                <div class="skill-node" data-skill="time-master" data-requirements='{"level": 10, "int": 20}'>
+                    <div class="node-icon"><i class="fas fa-clock"></i></div>
+                    <div class="node-info">
+                        <h3>Time Master</h3>
+                        <p>Daily reset time +2 hours</p>
+                        <div class="requirements">Req: Level 10, INT 20</div>
+                    </div>
+                </div>
+
+                <div class="skill-node" data-skill="skill-specialist" data-requirements='{"level": 18, "per": 25}'>
+                    <div class="node-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <div class="node-info">
+                        <h3>Skill Specialist</h3>
+                        <p>Skill point gain +50%</p>
+                        <div class="requirements">Req: Level 18, PER 25</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="skill-info-panel">
+            <div class="info-header">
+                <h3>Skill Information</h3>
+            </div>
+            <div class="info-content">
+                <p>Click on a skill to see details and unlock it if you meet the requirements.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/skill-tree.js"></script>
+    <script src="js/database.js"></script>
+    <script>
+        // Auto-sync when page loads
+        async function loadDataFromMongoDB() {
+            const apiUrl = `https://sys-lvlup.vercel.app/api/sync`;
+
+            try {
+                const response = await fetch(apiUrl, { method: 'GET' });
+
+                if (response.status === 404) {
+                    console.log("Device data not found. Starting fresh.");
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                const localStorageData = data.localStorageData;
+                
+                localStorage.setItem("gameData", JSON.stringify(localStorageData));
+                console.log('Data loaded successfully.');
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDataFromMongoDB();
+        });
+    </script>
+</body>
+</html>
