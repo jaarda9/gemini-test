@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>System</title>
+    
+    <!-- CSS is embedded here for a single-file solution -->
+    <style>
+      /* Color Palette & Fonts */
+      :root {
+        --background-color: #0d1117;
+        --panel-background: rgba(1, 1, 1, 0.6);
+        --border-color: #444c56;
+        --text-color: #e6edf3;
+        --accent-color: #58a6ff; /* A neon blue for highlights */
+        --highlight-shadow: 0 0 10px var(--accent-color);
+        --font-family: 'Consolas', 'Courier New', monospace;
+      }
+
+      /* Base Styles */
+      body {
+        background-color: var(--background-color);
+        font-family: var(--font-family);
+        color: var(--text-color);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        overflow: hidden;
+      }
+
+      .system-ui-container {
+        width: 90%;
+        max-width: 600px;
+      }
+
+      /* Status Panel */
+      .status-panel {
+        background: var(--panel-background);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
+      }
+
+      /* Header Section (Level, Ping) */
+      .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 15px;
+      }
+
+      .level-info, .ping-info {
+        text-align: center;
+        text-shadow: var(--highlight-shadow);
+      }
+
+      .level-number {
+        font-size: 3.5em;
+        font-weight: bold;
+        color: var(--accent-color);
+      }
+
+      /* Core Stats Bars */
+      .stat-bars {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin-bottom: 25px;
+      }
+
+      .stat-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .stat-group .stat-label {
+        font-weight: bold;
+        width: 35px;
+        text-align: right;
+        text-shadow: 0 0 5px var(--text-color);
+      }
+
+      .bar-container {
+        background-color: #21262d;
+        height: 12px;
+        flex-grow: 1;
+        border-radius: 6px;
+        overflow: hidden;
+      }
+
+      .fill {
+        height: 100%;
+        background: var(--accent-color);
+        transition: width 0.5s ease;
+        box-shadow: 0 0 8px var(--accent-color);
+      }
+
+      /* Custom bar colors */
+      .stat-group:nth-child(1) .fill { background: #ff6b6b; box-shadow: 0 0 8px #ff6b6b; } /* HP */
+      .stat-group:nth-child(2) .fill { background: #6a7bb4; box-shadow: 0 0 8px #6a7bb4; } /* MP */
+      .stat-group:nth-child(3) .fill { background: #66c066; box-shadow: 0 0 8px #66c066; } /* STM */
+      .stat-group:nth-child(4) .fill { background: #d9b165; box-shadow: 0 0 8px #d9b165; } /* EXP */
+
+      .stat-value {
+        min-width: 60px;
+        text-align: right;
+        font-size: 0.9em;
+      }
+
+      /* Fatigue Ring */
+      .fatigue-section {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 25px;
+      }
+
+      .fatigue-ring-wrapper {
+        position: relative;
+        width: 80px;
+        height: 80px;
+      }
+
+      .progress-ring-bg {
+        stroke: #21262d;
+      }
+
+      .progress-ring-fg {
+        transition: stroke-dashoffset 0.35s;
+        transform-origin: 50% 50%;
+        transform: rotate(-90deg);
+        stroke: var(--accent-color);
+        filter: drop-shadow(0 0 5px var(--accent-color));
+      }
+
+      .fatigue-label-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+      }
+
+      .label-text { font-size: 0.8em; }
+      .label-value { font-size: 1.2em; font-weight: bold; }
+
+      /* Attributes Section */
+      .attributes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+        margin-bottom: 25px;
+      }
+
+      .attribute-item {
+        display: flex;
+        align-items: center;
+        font-size: 1.1em;
+        text-shadow: 0 0 5px var(--text-color);
+        border-left: 2px solid var(--accent-color);
+        padding-left: 10px;
+      }
+
+      .stat-icon {
+        margin-right: 10px;
+        color: var(--accent-color);
+        text-shadow: 0 0 8px var(--accent-color);
+      }
+
+      /* Details and Quests */
+      .details-section, .quests-section {
+        padding-top: 20px;
+        border-top: 1px solid var(--border-color);
+        margin-bottom: 25px;
+      }
+
+      .details-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 10px;
+      }
+
+      .detail-item {
+        font-size: 0.9em;
+      }
+
+      .section-title {
+        text-align: center;
+        font-size: 1.5em;
+        margin-bottom: 15px;
+        color: var(--accent-color);
+        text-shadow: var(--highlight-shadow);
+      }
+
+      .quest-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #21262d;
+      }
+
+      .quest-status, .quest-link {
+        color: var(--accent-color);
+        text-decoration: none;
+        font-weight: bold;
+      }
+
+      .quest-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 15px;
+      }
+
+      .gemini-button {
+        background: #334466;
+        color: var(--text-color);
+        border: 1px solid var(--accent-color);
+        border-radius: 8px;
+        padding: 10px 15px;
+        cursor: pointer;
+        transition: background-color 0.3s, box-shadow 0.3s;
+      }
+
+      .gemini-button:hover {
+        background-color: #445577;
+        box-shadow: 0 0 10px var(--accent-color);
+      }
+
+      .gemini-button:disabled {
+        background-color: #21262d;
+        color: #6a7bb4;
+        cursor: not-allowed;
+      }
+
+      #gemini-status {
+        text-align: center;
+        font-size: 0.9em;
+        margin-top: 10px;
+        min-height: 20px;
+      }
+
+      .loader {
+        border: 4px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 4px solid var(--accent-color);
+        width: 20px;
+        height: 20px;
+        animation: spin 2s linear infinite;
+        margin: auto;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
+    <!-- Your existing Font Awesome link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  </head>
+  <body>
+    <!-- Main container for the system UI -->
+    <div class="system-ui-container">
+      <!-- Main status panel -->
+      <div class="status-panel">
+        <div class="panel-header">
+          <div class="level-info">
+            <span class="level-number" id="lvlValue">1</span>
+            <div class="level-label">LEVEL</div>
+          </div>
+          <div class="ping-info">
+            <span id="ping-text">60 ms</span>
+            <div class="ping-label">PING</div>
+          </div>
+        </div>
+
+        <div class="stat-bars">
+          <div class="stat-group">
+            <span class="stat-label">HP</span>
+            <div class="bar-container"><div class="fill" id="hp-fill"></div></div>
+            <span class="stat-value" id="HPvalue">100/100</span>
+          </div>
+          <div class="stat-group">
+            <span class="stat-label">MP</span>
+            <div class="bar-container"><div class="fill" id="mp-fill"></div></div>
+            <span class="stat-value" id="MPvalue">100/100</span>
+          </div>
+          <div class="stat-group">
+            <span class="stat-label">STM</span>
+            <div class="bar-container"><div class="fill" id="stm-fill"></div></div>
+            <span class="stat-value" id="STMvalue">100/100</span>
+          </div>
+          <div class="stat-group">
+            <span class="stat-label">EXP</span>
+            <div class="bar-container"><div class="fill" id="exp-fill"></div></div>
+            <span class="stat-value" id="XPvalue">0/100</span>
+          </div>
+        </div>
+
+        <div class="fatigue-section">
+          <div class="fatigue-ring-wrapper">
+            <svg class="progress-ring" width="80" height="80">
+              <circle class="progress-ring-bg" stroke-width="8" fill="transparent" r="34" cx="40" cy="40" />
+              <circle class="progress-ring-fg" id="fatringprogg" stroke-width="8" fill="transparent" r="34" cx="40" cy="40" />
+            </svg>
+            <div class="fatigue-label-content">
+              <div class="label-text">FATIGUE</div>
+              <div class="label-value" id="Fatvalue">0%</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="attributes-grid">
+          <div class="attribute-item">
+            <i class="fas fa-dumbbell stat-icon"></i><span id="str">STR: 10</span>
+          </div>
+          <div class="attribute-item">
+            <i class="fas fa-heart stat-icon"></i><span id="vit">VIT: 10</span>
+          </div>
+          <div class="attribute-item">
+            <i class="fas fa-running stat-icon"></i><span id="agi">AGI: 10</span>
+          </div>
+          <div class="attribute-item">
+            <i class="fas fa-brain stat-icon"></i><span id="int">INT: 10</span>
+          </div>
+          <div class="attribute-item">
+            <i class="fas fa-eye stat-icon"></i><span id="per">PER: 10</span>
+          </div>
+          <div class="attribute-item">
+            <i class="fa-solid fa-yin-yang stat-icon"></i><span id="wis">WIS: 10</span>
+          </div>
+        </div>
+        
+        <div class="details-section">
+          <div class="detail-item"><strong>Name:</strong> <span id="job-text">Fedy</span></div>
+          <div class="detail-item"><strong>Guild:</strong> <span id="guild-text">Reaper</span></div>
+          <div class="detail-item"><strong>Rank:</strong> <span id="rank-text">E-Rank</span></div>
+          <div class="detail-item"><strong>Race:</strong> <span id="race-text">Hunter</span></div>
+          <div class="detail-item"><strong>Location:</strong> <span id="location-text">Hospital</span></div>
+          <div class="detail-item"><strong>Region:</strong> <span id="region-text">TN</span></div>
+        </div>
+
+        <div class="quests-section">
+          <h2 class="section-title">[Active Quests]</h2>
+          <div id="quest-list">
+            <div class="quest-item">
+              <span>Grunt Work</span> <span class="quest-status">Done</span>
+            </div>
+            <div class="quest-item">
+              <span>[MAIN] Power</span>
+              <a href="daily_quest.html" class="quest-link">Lv.1</a>
+            </div>
+          </div>
+          <div class="quest-actions">
+            <button class="gemini-button" id="generate-quest-btn">Generate New Quest ✨</button>
+          </div>
+          <div id="gemini-status"></div>
+          <div id="generated-quest" style="display:none; margin-top: 20px;">
+            <div class="quest-item">
+                <span id="new-quest-title"></span>
+                <button id="tts-btn" class="gemini-button" style="padding: 5px 10px; font-size: 0.8em;"><i class="fas fa-volume-up"></i></button>
+            </div>
+            <p id="new-quest-description" style="margin-top: 10px; font-size: 0.9em;"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="js/status.js"></script>
+  </body>
+</html>
