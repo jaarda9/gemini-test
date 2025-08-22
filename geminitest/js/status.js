@@ -172,7 +172,7 @@ const generateNewQuest = async () => {
     }
   };
 
-  const apiKey = "";
+  const apiKey = "AIzaSyCd8keOdeW1lZ-3CsEuVbelGeDpxE298O4";
   const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
   try {
@@ -285,3 +285,4 @@ document.addEventListener('DOMContentLoaded', () => {
   // Optional: Sync data to MongoDB before the user leaves the page
   window.addEventListener('beforeunload', syncToDatabase);
 });
+
