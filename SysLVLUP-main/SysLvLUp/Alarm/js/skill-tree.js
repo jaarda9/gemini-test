@@ -1,3 +1,5 @@
+import { syncToDatabase } from './sync-utils.js';
+
 // Skill Tree System
 class SkillTree {
     constructor() {
@@ -267,21 +269,8 @@ class SkillTree {
 
     async syncToDatabase() {
         try {
-            const response = await fetch('/api/sync', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    userId: 'your-user-id',
-                    localStorageData: this.gameData
-                })
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
+            // Use the centralized syncToDatabase function
+            await syncToDatabase();
             console.log('Skill tree data synced successfully');
         } catch (error) {
             console.error('Error syncing skill tree data:', error);

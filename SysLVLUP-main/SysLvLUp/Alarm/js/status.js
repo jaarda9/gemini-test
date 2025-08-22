@@ -1,3 +1,5 @@
+import { syncToDatabase } from './sync-utils.js';
+
 document.addEventListener("DOMContentLoaded", function() {
   const savedData = JSON.parse(localStorage.getItem("gameData"));
   function measurePing(url) {
@@ -331,6 +333,7 @@ function loadData() {
     resetData();
   }
 }
+
 
 // Save Data Function
 function saveData() {
