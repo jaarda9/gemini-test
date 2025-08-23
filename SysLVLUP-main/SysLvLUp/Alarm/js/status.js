@@ -46,9 +46,12 @@ document.querySelectorAll(".increment-btn").forEach((button) => {
 
 // New Quest Button Functionality
 document.getElementById("generate-quest-btn").addEventListener("click", function() {
-    // Logic to generate a new quest
-    console.log("Generating new quest...");
-    // You can add your quest generation logic here
+    // Trigger the random quest system to generate a new quest
+    if (window.randomQuestSystem) {
+        window.randomQuestSystem.triggerQuest();
+    } else {
+        console.error("Random quest system not initialized");
+    }
 });
 
 function customRound(num) {
