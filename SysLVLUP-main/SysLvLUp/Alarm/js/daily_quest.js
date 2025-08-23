@@ -1,4 +1,3 @@
-import { syncToDatabase } from './sync-utils.js';
 document.addEventListener("DOMContentLoaded", function () {
   // Retrieve game data from localStorage
   let savedData = JSON.parse(localStorage.getItem("gameData"));
@@ -126,11 +125,11 @@ function resetDailyStats() {
     savedData.physicalQuests = "[0/4]";
     savedData.spiritualQuests = "[0/2]";
     document.getElementById("mentalQuests").textContent =
-      savedData.mentalQuests;
+    savedData.mentalQuests;
     document.getElementById("physicalQuests").textContent =
-      savedData.physicalQuests;
+    savedData.physicalQuests;
     document.getElementById("spiritualQuests").textContent =
-      savedData.spiritualQuests;
+    savedData.spiritualQuests;
 
     // Save the updated data
     localStorage.setItem("gameData", JSON.stringify(savedData));

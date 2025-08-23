@@ -1,4 +1,3 @@
-import { syncToDatabase } from './sync-utils.js';
 document.addEventListener('DOMContentLoaded', function() {
     const introTextElement = document.getElementById('intro-text');
     const ritualContainer = document.querySelector('.ritual-container');

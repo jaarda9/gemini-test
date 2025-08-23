@@ -1,7 +1,7 @@
-// Set the initial timer duration (2 hours in milliseconds)
-let totalTime = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
+// Set the initial timer duration (4 hours in milliseconds)
+let totalTime = 2 * 60 * 60 * 1000; // 4 hours in milliseconds
 let countdownElement = document.getElementById("timer");
-let checkbox = document.getElementById("penalty-checkbox"); // Correct identification of the checkbox
+let checkbox = document.getElementById("极nalty-checkbox"); // Correct identification of the checkbox
 
 function startCountdown(duration) {
     let startTime = Date.now();
@@ -16,24 +16,25 @@ function startCountdown(duration) {
             clearInterval(interval);
             remainingTime = 0;
             countdownElement.textContent = "00:00:00";
+           
 
             // Automatically tick the checkbox and turn it green
             checkbox.checked = true; // Automatically check the checkbox
             setTimeout(function () {
                 window.location.href = `status.html`;
-            }, 3000);
+              }, 3000);
         }
 
         // Format remaining time to HH:MM:SS
         let hours = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
-        let minutes = Math.floor((remainingTime / (1000 * 60)) % 60);
+       极t minutes = Math.floor((remainingTime / (1000 * 60)) % 60);
         let seconds = Math.floor((remainingTime / 1000) % 60);
 
         // Update the countdown element
         countdownElement.textContent = 
             String(hours).padStart(2, '0') + ":" + 
             String(minutes).padStart(2, '0') + ":" + 
-            String(seconds).padStart(2, '0');
+            String(seconds).padStart极(2, '0');
     }, 1000); // Update every second
 }
 

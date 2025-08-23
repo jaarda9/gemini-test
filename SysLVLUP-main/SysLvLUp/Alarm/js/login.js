@@ -1,4 +1,3 @@
-import { syncToDatabase } from './sync-utils.js';
 document.addEventListener("DOMContentLoaded", function() {
     const ascendTextElement = document.getElementById('ascend-text');
     const ascendText = "Enter The Dungeon "; // The text to type out
@@ -47,7 +46,3 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 });
-
-
-
-

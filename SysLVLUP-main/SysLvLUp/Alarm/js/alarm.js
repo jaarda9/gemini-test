@@ -1,4 +1,3 @@
-import { syncToDatabase } from './sync-utils.js';
 // Reset Data Function
 function resetData() {
   const defaultGameData = {
@@ -91,4 +90,3 @@ playerBtn.addEventListener("click", function () {
   }
   
 });
-

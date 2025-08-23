@@ -1,4 +1,3 @@
-import { syncToDatabase } from './sync-utils.js';
 // Define the mental tasks that are the same every day
 const mentalTasks = [
     { name: "Meditation", target: "10 min", xp: 1.5, stats: { INT: 0.5, PER: 0.25 }, completed: false },
@@ -102,4 +101,4 @@ function updateMentalStatusCard() {
 
 setTimeout(function() {
     window.location.href = `/Penalty_Quest.html`;
-        }, 7200000); 
+        }, 7200000);

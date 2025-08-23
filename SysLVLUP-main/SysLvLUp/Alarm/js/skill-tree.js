@@ -1,5 +1,3 @@
-import { syncToDatabase } from './sync-utils.js';
-
 // Skill Tree System
 class SkillTree {
     constructor() {
