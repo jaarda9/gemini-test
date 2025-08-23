@@ -262,7 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadDataFromMongoDB();
   
   // Load existing game data
-  loadData();
+  
   updateFatigueProgress();
   checkForLevelUp();
   checkForNewDay();
