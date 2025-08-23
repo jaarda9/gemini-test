@@ -44,6 +44,13 @@ document.querySelectorAll(".increment-btn").forEach((button) => {
   });
 });
 
+// New Quest Button Functionality
+document.getElementById("generate-quest-btn").addEventListener("click", function() {
+    // Logic to generate a new quest
+    console.log("Generating new quest...");
+    // You can add your quest generation logic here
+});
+
 function customRound(num) {
     return (num - Math.floor(num)) > 0.4 ? Math.ceil(num) : Math.floor(num);
   }
@@ -130,8 +137,6 @@ function saveChanges() {
   });
   toggleEditMode();
 }
-
-
 
 // Update Progress Bar Function
 function updateProgressBar(stat) {
@@ -220,3 +225,6 @@ function applySkillEffects(savedData) {
         savedData.Attributes.PER += 6;
         savedData.questRewardBonus = (savedData.questRewardBonus || 0) + 15;
         break;
+    }
+  });
+}
