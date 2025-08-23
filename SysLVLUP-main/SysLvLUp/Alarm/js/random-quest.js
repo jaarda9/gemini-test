@@ -1,6 +1,4 @@
-import { syncToDatabase } from './sync-utils.js';
-
-// Random Quest Popup System
+ // Random Quest Popup System
 class RandomQuestSystem {
     constructor() {
         this.gameData = null;

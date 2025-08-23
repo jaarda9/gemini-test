@@ -1,4 +1,3 @@
-import { syncToDatabase } from './sync-utils.js';
 // Define the mental tasks that are the same every day
 const mentalTasks = [
     { name: "Finish a Book", target: "",  completed: false },

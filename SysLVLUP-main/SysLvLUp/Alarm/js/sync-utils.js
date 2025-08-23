@@ -1,5 +1,5 @@
 // Centralized syncToDatabase function for all JavaScript files
-export async function syncToDatabase() {
+async function syncToDatabase() {
   try {
     const localStorageData = JSON.parse(localStorage.getItem("gameData"));
     
