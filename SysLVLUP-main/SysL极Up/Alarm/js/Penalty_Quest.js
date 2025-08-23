@@ -27,7 +27,7 @@ function startCountdown(duration) {
 
         // Format remaining time to HH:MM:SS
         let hours = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
-       极t minutes = Math.floor((remainingTime / (1000 * 60)) % 60);
+        let minutes = Math.floor((remainingTime / (1000 * 60)) % 60);
         let seconds = Math.floor((remainingTime / 1000) % 60);
 
         // Update the countdown element
